@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "papaparse": "^5.5.2"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.3.15"
+  }
+}

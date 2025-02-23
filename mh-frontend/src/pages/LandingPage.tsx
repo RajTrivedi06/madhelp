@@ -218,24 +218,6 @@ function SignUpForm() {
         />
       </div>
 
-      {/* INTERESTS DROPDOWN */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Interests
-        </label>
-        <select
-          name="interest"
-          required
-          className="mt-1 w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
-          <option value="">Select an interest</option>
-          <option value="AI">AI</option>
-          <option value="Data Science">Data Science</option>
-          <option value="Biology">Biology</option>
-          <option value="Chemistry">Chemistry</option>
-        </select>
-      </div>
-
       {/* UPLOAD CV */}
       <div>
         <label className="block text-sm font-medium text-gray-700">

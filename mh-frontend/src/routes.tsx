@@ -17,20 +17,14 @@ export const router = createBrowserRouter([
       {
         path: "what-do-you-want",
         element: <WhatDoYouWantPage />,
-        children: [
-          {
-            index: true,
-            element: <div>Please select an option</div>,
-          },
-          {
-            path: "ra-feature",
-            element: <RAFeaturePage />,
-          },
-          {
-            path: "course-search-ai",
-            element: <CourseSearchAIPage />,
-          },
-        ],
+      },
+      {
+        path: "ra-feature",
+        element: <RAFeaturePage />,
+      },
+      {
+        path: "course-search-ai",
+        element: <CourseSearchAIPage />,
       },
     ],
   },
