@@ -1,34 +1,30 @@
-// src/pages/LandingPage.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
 import { LineShadowText } from "../components/magicui/line-shadow-text";
 
-// Generic File Upload Button Component
 function FileUploadButton({
   label,
   accept,
+  name,
   onFileSelected,
 }: {
   label: string;
   accept: string;
+  name: string;
   onFileSelected?: (file: File) => void;
 }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      if (onFileSelected) {
-        onFileSelected(file);
-      }
+      onFileSelected?.(file);
     }
   };
 
@@ -43,12 +39,164 @@ function FileUploadButton({
       </button>
       <input
         type="file"
+        name={name}
         accept={accept}
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
       />
     </div>
+  );
+}
+
+function SignUpForm() {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Signup successful! Welcome " + result.username);
+        navigate("/what-do-you-want");
+      } else {
+        alert(result.error || "Signup failed.");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("An error occurred during signup.");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Username
+        </label>
+        <input
+          type="text"
+          name="username"
+          required
+          className="mt-1 w-full border border-gray-300 rounded-lg p-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          type="email"
+          name="email"
+          required
+          className="mt-1 w-full border border-gray-300 rounded-lg p-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          required
+          className="mt-1 w-full border border-gray-300 rounded-lg p-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Confirm Password
+        </label>
+        <input
+          type="password"
+          name="confirm_password"
+          required
+          className="mt-1 w-full border border-gray-300 rounded-lg p-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Upload CV (PDF Only)
+        </label>
+        <FileUploadButton label="Upload CV" accept=".pdf" name="cv" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Upload DARS (PDF Only)
+        </label>
+        <FileUploadButton label="Upload DARS" accept=".pdf" name="dars" />
+      </div>
+      <button
+        type="submit"
+        className="w-full py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
+      >
+        Sign Up
+      </button>
+    </form>
+  );
+}
+
+function LoginForm() {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", result.token); // Store JWT token
+        alert("Login successful! Welcome " + result.username);
+        navigate("/dashboard"); // Redirect to dashboard
+      } else {
+        alert(result.error || "Login failed.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred during login.");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          type="email"
+          name="email"
+          required
+          className="mt-1 w-full border border-gray-300 rounded p-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          required
+          className="mt-1 w-full border border-gray-300 rounded p-2"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full py-2 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700"
+      >
+        Login
+      </button>
+    </form>
   );
 }
 
@@ -83,10 +231,7 @@ export default function LandingPage() {
           <section className="text-center">
             <p className="text-base sm:text-lg md:text-xl text-gray-800 leading-relaxed">
               At MadHelp, we bridge the gap between ambitious students and
-              groundbreaking research opportunities. Leverage your academic
-              report and CV to connect with professors and projects that match
-              your passion and skills. Join us and be part of a vibrant UW
-              Madison community driving innovation forward.
+              groundbreaking research opportunities...
             </p>
           </section>
 
@@ -94,11 +239,10 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
               <Dialog.Trigger asChild>
-                <button className="w-full sm:w-auto px-8 py-3 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition duration-200 text-lg font-semibold">
+                <button className="w-full sm:w-auto px-8 py-3 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 text-lg font-semibold">
                   Sign In
                 </button>
               </Dialog.Trigger>
-
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/50" />
                 <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-xl p-6 shadow-2xl mx-4">
@@ -141,7 +285,7 @@ export default function LandingPage() {
 
             <button
               onClick={() => navigate("/what-do-you-want")}
-              className="w-full sm:w-auto px-8 py-3 bg-white border-2 border-red-600 text-red-600 rounded-full shadow-lg hover:bg-red-50 transition duration-200 text-lg font-semibold"
+              className="w-full sm:w-auto px-8 py-3 bg-white border-2 border-red-600 text-red-600 rounded-full shadow-lg hover:bg-red-50 text-lg font-semibold"
             >
               Get Started
             </button>
@@ -156,135 +300,5 @@ export default function LandingPage() {
         </p>
       </footer>
     </div>
-  );
-}
-
-// UI-only SignUpForm (with file finder functionality)
-function SignUpForm() {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // UI only – submission logic goes here later.
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* USERNAME */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Username
-        </label>
-        <input
-          type="text"
-          name="username"
-          required
-          className="mt-1 w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-      </div>
-
-      {/* EMAIL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          type="email"
-          name="email"
-          required
-          className="mt-1 w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-      </div>
-
-      {/* PASSWORD */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          name="password"
-          required
-          className="mt-1 w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-      </div>
-
-      {/* CONFIRM PASSWORD */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Confirm Password
-        </label>
-        <input
-          type="password"
-          name="confirm_password"
-          required
-          className="mt-1 w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-      </div>
-
-      {/* UPLOAD CV */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Upload CV (PDF Only)
-        </label>
-        <FileUploadButton label="Upload CV" accept=".pdf" />
-      </div>
-
-      {/* UPLOAD DARS */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Upload DARS (PDF Only)
-        </label>
-        <FileUploadButton label="Upload DARS" accept=".pdf" />
-      </div>
-
-      {/* SUBMIT BUTTON */}
-      <button
-        type="submit"
-        className="w-full py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition duration-200"
-      >
-        Sign Up
-      </button>
-    </form>
-  );
-}
-
-// UI-only LoginForm (no state handling)
-function LoginForm() {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // UI only – submission logic goes here later.
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* EMAIL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          type="email"
-          name="email"
-          required
-          className="mt-1 w-full border border-gray-300 rounded p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-      </div>
-
-      {/* PASSWORD */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          name="password"
-          required
-          className="mt-1 w-full border border-gray-300 rounded p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-      </div>
-
-      {/* SUBMIT BUTTON */}
-      <button
-        type="submit"
-        className="w-full py-2 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition"
-      >
-        Login
-      </button>
-    </form>
   );
 }

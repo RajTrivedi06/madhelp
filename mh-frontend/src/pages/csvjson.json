@@ -2,7 +2,7 @@
   {
     "Name": "Cécile Ané",
     "Email": "cecile.ane@wisc.edu",
-    "Faculty": "Statistics (Professor); Botany (Affiliate Faculty)",
+    "Faculty": "Statistics ; Botany ",
     "Summary of Research": "Developing statistical methods for evolutionary biology, particularly in phylogenetics and comparative methods.",
     "Fields of Research": "Statistical Methods in Evolutionary Biology, Phylogenetics, Comparative Methods, Data Science",
     "Link to Page": "https://pages.stat.wisc.edu/~ane/"
@@ -10,7 +10,7 @@
   {
     "Name": "Eric Bach",
     "Email": "bach@cs.wisc.edu",
-    "Faculty": "Computer Sciences (Professor); Electrical & Computer Engineering (Affiliate Professor); Mathematics (Affiliate Professor)",
+    "Faculty": "Computer Sciences ; Electrical & Computer Engineering ; Mathematics ",
     "Summary of Research": "Research focuses on theoretical computer science, computational number theory, algebraic algorithms, complexity theory, and cryptography.",
     "Fields of Research": "Theoretical Computer Science, Computational Number Theory, Algebraic Algorithms, Complexity Theory, Cryptography",
     "Link to Page": "https://pages.cs.wisc.edu/~bach/"
@@ -18,7 +18,7 @@
   {
     "Name": "Richard J. Chappell",
     "Email": "chappell@biostat.wisc.edu",
-    "Faculty": "Biostatistics & Medical Informatics (Professor)",
+    "Faculty": "Biostatistics & Medical Informatics ",
     "Summary of Research": "Research interests include the analysis and design of clinical trials, estimation in generalized linear models, and models in radiobiology.",
     "Fields of Research": "Clinical Trials Analysis and Design, Generalized Linear Models, Survival Analysis, Alzheimer's Disease Prediction, Radiobiology Models",
     "Link to Page": "https://www.biostat.wisc.edu/staff/chappell-richard-j/"
@@ -26,7 +26,7 @@
   {
     "Name": "Yongyi Guo",
     "Email": "guo98@wisc.edu",
-    "Faculty": "Statistics (Assistant Professor)",
+    "Faculty": "Statistics ",
     "Summary of Research": "Research includes statistical reinforcement learning, distributed learning, experimental causal inference, and high-dimensional statistics.",
     "Fields of Research": "Statistical Reinforcement Learning, Distributed Learning, Experimental Causal Inference, High-Dimensional Statistics, Healthcare Applications",
     "Link to Page": "https://stat.wisc.edu/staff/guo-yongyi/"
@@ -34,7 +34,7 @@
   {
     "Name": "Bret Larget",
     "Email": "bret.larget@wisc.edu",
-    "Faculty": "Statistics (Professor); Botany (Affiliate Professor)",
+    "Faculty": "Statistics ; Botany ",
     "Summary of Research": "Research focuses on statistical methods in biological sciences, Bayesian computational approaches to study evolution, and data science education.",
     "Fields of Research": "Statistical Methods in Biological Sciences, Bayesian Computational Approaches, Evolutionary Studies, Data Science Education",
     "Link to Page": "https://pages.stat.wisc.edu/~larget/"
@@ -42,7 +42,7 @@
   {
     "Name": "Keith Levin",
     "Email": "kdlevin@wisc.edu",
-    "Faculty": "Statistics (Assistant Professor)",
+    "Faculty": "Statistics ",
     "Summary of Research": "Research includes network analysis, dimension reduction, concentration inequalities, and clustering problems, with applications to neuroscience and speech processing.",
     "Fields of Research": "Network Analysis, Dimension Reduction, Concentration Inequalities, Clustering Problems, Neuroscience Applications, Speech Processing Applications",
     "Link to Page": "https://pages.stat.wisc.edu/~kdlevin/"
@@ -50,7 +50,7 @@
   {
     "Name": "Garvesh Raskutti",
     "Email": "raskutti@wisc.edu",
-    "Faculty": "Statistics (Associate Professor); Computer Sciences (Affiliate Faculty); Electrical & Computer Engineering (Affiliate Faculty)",
+    "Faculty": "Statistics ; Computer Sciences ; Electrical & Computer Engineering ",
     "Summary of Research": "Research focuses on optimization theory, information theory, and theoretical statistics, with applications in systems biology and neuroscience.",
     "Fields of Research": "Optimization Theory, Information Theory, Theoretical Statistics, Large-Scale Inference, Systems Biology, Neuroscience",
     "Link to Page": "https://pages.stat.wisc.edu/~raskutti/"
@@ -58,7 +58,7 @@
   {
     "Name": "Michael A. Newton",
     "Email": "newton@biostat.wisc.edu",
-    "Faculty": "Statistics (Professor); Biostatistics & Medical Informatics (Professor)",
+    "Faculty": "Statistics ; Biostatistics & Medical Informatics ",
     "Summary of Research": "Research in data science applications in biomedicine, including cancer biology, immunology, and genomics.",
     "Fields of Research": "Data Science in Biomedicine, Cancer Biology, Immunology, Genomics, High-Dimensional Biostatistical Inference, Computational Statistics, Empirical Bayesian Methods",
     "Link to Page": "https://pages.stat.wisc.edu/~newton/"
@@ -66,7 +66,7 @@
   {
     "Name": "Karl Broman",
     "Email": "broman@wisc.edu",
-    "Faculty": "Biostatistics & Medical Informatics (Professor); Statistics (Affiliate Faculty)",
+    "Faculty": "Biostatistics & Medical Informatics ; Statistics ",
     "Summary of Research": "Research in statistical genetics, including QTL mapping and reproducible research.",
     "Fields of Research": "Statistical Genetics, QTL Mapping, Reproducible Research, Data Visualization, Scientific Communication",
     "Link to Page": "https://kbroman.org/about.html"
@@ -74,7 +74,7 @@
   {
     "Name": "Ronald Gangnon",
     "Email": "ronald@biostat.wisc.edu",
-    "Faculty": "Biostatistics & Medical Informatics (Professor)",
+    "Faculty": "Biostatistics & Medical Informatics ",
     "Summary of Research": "Research focuses on spatial epidemiology, statistical methods for observational studies, and chronic disease epidemiology.",
     "Fields of Research": "Spatial Epidemiology, Observational Studies, Chronic Disease Epidemiology, Causal Inference",
     "Link to Page": "https://rgangnon.org/"
@@ -90,7 +90,7 @@
   {
     "Name": "Kassem Fawaz",
     "Email": "kfawaz@wisc.edu",
-    "Faculty": "Electrical & Computer Engineering (Associate Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Electrical & Computer Engineering ; Computer Sciences ",
     "Summary of Research": "I am an associate professor in the ECE Department at the University of Wisconsin - Madison, where I am also affiliated with the Computer Sciences Department. My research interests include security and privacy issues in computer systems, with a focus on machine learning security, privacy-preserving technologies, and the security of cyber-physical systems.",
     "Fields of Research": "Security and Privacy in Computer Systems, Machine Learning Security, Privacy-Preserving Technologies, Cyber-Physical Systems Security",
     "Link to Page": "https://www.cs.wisc.edu/staff/fawaz-kassem/"
@@ -98,7 +98,7 @@
   {
     "Name": "Anthony Gitter",
     "Email": "gitter@biostat.wisc.edu",
-    "Faculty": "Biostatistics & Medical Informatics (Assistant Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Biostatistics & Medical Informatics ; Computer Sciences ",
     "Summary of Research": "I am an assistant professor in the Department of Biostatistics & Medical Informatics at the University of Wisconsin-Madison and an affiliate faculty member in the Computer Sciences Department. My research focuses on computational biology, particularly the development of machine learning methods to understand complex biological systems and processes.",
     "Fields of Research": "Computational Biology, Machine Learning, Bioinformatics",
     "Link to Page": "https://www.cs.wisc.edu/staff/gitter-anthony/"
@@ -106,7 +106,7 @@
   {
     "Name": "Junjie Hu",
     "Email": "junjie.hu@wisc.edu",
-    "Faculty": "Biostatistics & Medical Informatics (Assistant Professor); Computer Sciences (Affiliate Faculty); Data Science Institute (Assistant Professor)",
+    "Faculty": "Biostatistics & Medical Informatics ; Computer Sciences ; Data Science ",
     "Summary of Research": "I am an assistant professor with appointments in the Department of Biostatistics & Medical Informatics, the Department of Computer Sciences, and the Data Science Institute at the University of Wisconsin-Madison. My research interests include natural language processing and machine learning, with a focus on building robust intelligent systems that can adapt to environmental changes and interact with people speaking different languages.",
     "Fields of Research": "Natural Language Processing, Machine Learning, Multilingual Representation Learning, Machine Learning Model Evaluation and Interpretation",
     "Link to Page": "https://www.cs.wisc.edu/staff/hu-junjie/"
@@ -114,7 +114,7 @@
   {
     "Name": "Tsung-Wei Huang",
     "Email": "tsung-wei.huang@wisc.edu",
-    "Faculty": "Electrical & Computer Engineering (Assistant Professor)",
+    "Faculty": "Electrical & Computer Engineering ",
     "Summary of Research": "I am an assistant professor in the Department of Electrical & Computer Engineering at the University of Wisconsin-Madison. My research interests include parallel computing, high-performance computing, and computer-aided design for very-large-scale integration (VLSI) systems.",
     "Fields of Research": "Parallel Computing, High-Performance Computing, Computer-Aided Design for VLSI Systems",
     "Link to Page": "https://www.cs.wisc.edu/staff/huang-tsung-wei/"
@@ -122,7 +122,7 @@
   {
     "Name": "Bhuvana Krishnaswamy",
     "Email": "bhuvana@ece.wisc.edu",
-    "Faculty": "Electrical & Computer Engineering (Assistant Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Electrical & Computer Engineering ; Computer Sciences ",
     "Summary of Research": "I am an assistant professor in the Department of Electrical & Computer Engineering at the University of Wisconsin-Madison and an affiliate faculty member in the Computer Sciences Department. My research focuses on wireless networking and mobile computing, with an emphasis on developing systems and protocols to improve the performance and reliability of wireless communication in diverse environments.",
     "Fields of Research": "Wireless Networking, Mobile Computing, Networked Systems Design and Implementation",
     "Link to Page": "https://www.cs.wisc.edu/staff/krishnaswamy-bhuvana/"
@@ -130,7 +130,7 @@
   {
     "Name": "Kangwook Lee",
     "Email": "kangwook.lee@wisc.edu",
-    "Faculty": "Electrical & Computer Engineering (Assistant Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Electrical & Computer Engineering ; Computer Sciences ",
     "Summary of Research": "I am an assistant professor in the Department of Electrical & Computer Engineering at the University of Wisconsin-Madison and an affiliate faculty member in the Computer Sciences Department. My research interests include machine learning, information theory, and coding theory, with a focus on developing efficient and robust algorithms for large-scale data analysis and distributed systems.",
     "Fields of Research": "Machine Learning, Information Theory, Coding Theory, Distributed Systems",
     "Link to Page": "https://www.cs.wisc.edu/staff/lee-kangwook/"
@@ -138,7 +138,7 @@
   {
     "Name": "Benjamin Lengerich",
     "Email": "lengerich@wisc.edu",
-    "Faculty": "Statistics (Assistant Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Statistics ; Computer Sciences ",
     "Summary of Research": "I am an assistant professor in the Department of Statistics at the University of Wisconsin-Madison and an affiliate faculty member in the Computer Sciences Department. My research focuses on developing machine learning methods that are interpretable and reliable, with applications in scientific domains such as biology and medicine.",
     "Fields of Research": "Machine Learning, Interpretability, Reliability, Computational Biology, Biomedical Data Science",
     "Link to Page": "https://www.cs.wisc.edu/staff/lengerich-benjamin/"
@@ -146,7 +146,7 @@
   {
     "Name": "Yin Li",
     "Email": "yin.li@wisc.edu",
-    "Faculty": "Biostatistics & Medical Informatics (Assistant Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Biostatistics & Medical Informatics ; Computer Sciences ",
     "Summary of Research": "I am an assistant professor in the Department of Biostatistics & Medical Informatics at the University of Wisconsin-Madison, with an affiliate appointment in the Department of Computer Sciences. My research interests lie in computer vision and its applications in healthcare, focusing on developing novel algorithms for image and video analysis, particularly in activity recognition in natural settings.",
     "Fields of Research": "Computer Vision, Mobile Health, Machine Learning",
     "Link to Page": "https://www.cs.wisc.edu/staff/li-yin/"
@@ -154,7 +154,7 @@
   {
     "Name": "Jeffrey Linderoth",
     "Email": "linderoth@wisc.edu",
-    "Faculty": "Industrial & Systems Engineering (Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Industrial & Systems Engineering ; Computer Sciences ",
     "Summary of Research": "I am a professor in the Department of Industrial & Systems Engineering at the University of Wisconsin-Madison and an affiliate faculty member in the Computer Sciences Department. My research focuses on mathematical optimization, particularly in developing algorithms and software for large-scale optimization problems, with applications in areas such as energy systems and transportation.",
     "Fields of Research": "Mathematical Optimization, Large-Scale Optimization, Energy Systems, Transportation",
     "Link to Page": "https://www.cs.wisc.edu/staff/linderoth-jeffrey/"
@@ -162,7 +162,7 @@
   {
     "Name": "Jim Luedtke",
     "Email": "jim.luedtke@wisc.edu",
-    "Faculty": "Industrial & Systems Engineering (Professor); Computer Sciences (Affiliate Faculty)",
+    "Faculty": "Industrial & Systems Engineering ; Computer Sciences ",
     "Summary of Research": "I am a professor in the Department of Industrial & Systems Engineering at the University of Wisconsin-Madison and an affiliate faculty member in the Computer Sciences Department. My research interests include stochastic and robust optimization, with applications in areas such as energy systems, healthcare, and supply chain management.",
     "Fields of Research": "Stochastic Optimization, Robust Optimization, Energy Systems, Healthcare, Supply Chain Management",
     "Link to Page": "https://www.cs.wisc.edu/staff/luedtke-james/"
@@ -258,7 +258,7 @@
   {
     "Name": "Sarah Short",
     "Email": "sjshort@wisc.edu",
-    "Faculty": "Educational Psychology, Center for Healthy Minds, Psychology",
+    "Faculty": "Educational Psych; Center for Healthy Minds; Psych",
     "Summary of Research": "Our longitudinal study examines the link between poverty, brain development and the emergence of executive functions. Data collection for this study began prenatally, with multiple study visits until children are 5yrs old. Data sets include MRI, behavioral, cognitive, biological, environmental measures. A central aim of this study is to investigate critical experiences of the home environment, including language exposure, caregiver behavior, and child sleep hygiene that may mediate the impact of poverty on children's cognitive, behavioral, and neural development",
     "Fields of Research": "Developmental, Biology of Brain and Behavior, Cognition & Cognitive Neuroscience",
     "Link to Page": "https://edpsych.education.wisc.edu/staff/short-sarah-j/."
@@ -290,7 +290,7 @@
   {
     "Name": "Ramya Korlakai Vinayak",
     "Email": "ramyakv@wisc.edu",
-    "Faculty": "Electrical & Computer Engineering (Assistant Professor); Computer Science (Affiliate Faculty); Statistics (Affiliate Faculty)",
+    "Faculty": "Electrical & Computer Engineering ; Computer Science ; Statistics ",
     "Summary of Research": "Research in Machine Learning, Statistical Inference, and Crowdsourcing, focusing on developing theoretically grounded tools for making reliable inferences from human-generated data.",
     "Fields of Research": "Machine Learning, Statistical Inference, Crowdsourcing",
     "Link to Page": "https://ramyakv.github.io/"
@@ -298,7 +298,7 @@
   {
     "Name": "Miguel Acosta",
     "Email": "macosta@wisc.edu",
-    "Faculty": "Economics (Assistant Professor)",
+    "Faculty": "Economics ",
     "Summary of Research": "Research in empirical macroeconomics and international trade, often using non-traditional data sources such as textual analysis and digitized historical records.",
     "Fields of Research": "Macroeconomics, International Trade",
     "Link to Page": "https://www.acostamiguel.com/"
@@ -306,7 +306,7 @@
   {
     "Name": "Naoki Aizawa",
     "Email": "naizawa@wisc.edu",
-    "Faculty": "Economics (Associate Professor)",
+    "Faculty": "Economics ",
     "Summary of Research": "Research in public economics, health economics, and labor economics, particularly on the interaction between social insurance programs and labor markets.",
     "Fields of Research": "Public Economics, Health Economics, Labor Economics",
     "Link to Page": "https://sites.google.com/site/naokiaizawaweb/"
@@ -314,7 +314,7 @@
   {
     "Name": "Job Boerma",
     "Email": "jboerma@wisc.edu",
-    "Faculty": "Economics (Assistant Professor)",
+    "Faculty": "Economics ",
     "Summary of Research": "Research in macroeconomics and public finance, focusing on wealth inequality, taxation, and the macroeconomic implications of mental health.",
     "Fields of Research": "Macroeconomics, Public Finance",
     "Link to Page": "https://jobboerma.com/"
@@ -322,7 +322,7 @@
   {
     "Name": "Carol Eunmi Lee",
     "Email": "carollee@wisc.edu",
-    "Faculty": "Integrative Biology (Professor)",
+    "Faculty": "Integrative Biology ",
     "Summary of Research": "Research in evolutionary responses to environmental changes, focusing on biological invasions, climate change, and pollution, using copepods as model systems.",
     "Fields of Research": "Evolutionary Biology, Genetics, Genomics, Physiology, Environmental Adaptation",
     "Link to Page": "https://carollee.labs.wisc.edu/Lee.html"
@@ -330,7 +330,7 @@
   {
     "Name": "Olaf Jensen",
     "Email": "ojensen@wisc.edu",
-    "Faculty": "Integrative Biology (Associate Professor); Center for Limnology (Associate Professor)",
+    "Faculty": "Integrative Biology ; Center for Limnology ",
     "Summary of Research": "Research in fisheries science and aquatic ecosystems, combining mathematical modeling, data synthesis, and field studies to improve conservation and management strategies.",
     "Fields of Research": "Fisheries Science, Conservation Biology, Marine Ecology, Aquatic Biology, Ecology",
     "Link to Page": "https://jensen.limnology.wisc.edu/"
@@ -338,7 +338,7 @@
   {
     "Name": "Jesse Weber",
     "Email": "jcweber@wisc.edu",
-    "Faculty": "Integrative Biology (Assistant Professor)",
+    "Faculty": "Integrative Biology ",
     "Summary of Research": "Research in evolutionary genetics, host-parasite interactions, and adaptation biology, focusing on how vertebrates coevolve with parasites.",
     "Fields of Research": "Evolutionary Genetics, Host-Parasite Interactions, Adaptation Biology",
     "Link to Page": "https://integrativebiology.wisc.edu/staff/weber-jesse/"
@@ -346,7 +346,7 @@
   {
     "Name": "Robert Johnson",
     "Email": "rjohnson@wisc.edu",
-    "Faculty": "Integrative Biology (Assistant Professor)",
+    "Faculty": "Integrative Biology ",
     "Summary of Research": "Research in aquatic ecosystem ecology, particularly the effects of green sea turtle herbivory and environmental stressors on seagrass ecosystems.",
     "Fields of Research": "Aquatic Ecosystem Ecology, Seagrass Ecology, Herbivory, Environmental Stressors",
     "Link to Page": "https://rjaquaticecology.weebly.com/"
@@ -354,7 +354,7 @@
   {
     "Name": "Adam Bailey",
     "Email": "abailey@wisc.edu",
-    "Faculty": "Pathology & Laboratory Medicine (Assistant Professor)",
+    "Faculty": "Pathology & Laboratory Medicine ",
     "Summary of Research": "Research in viral pathogenesis, viral persistence, and zoonotic diseases, with a focus on emerging pathogens and hemorrhagic fevers.",
     "Fields of Research": "Viral Pathogenesis, Viral Persistence, Zoonosis, Infectious Diseases",
     "Link to Page": "https://bailey.pathology.wisc.edu/"
@@ -362,7 +362,7 @@
   {
     "Name": "Donna Peters",
     "Email": "djpeters@wisc.edu",
-    "Faculty": "Pathology & Laboratory Medicine (Professor)",
+    "Faculty": "Pathology & Laboratory Medicine ",
     "Summary of Research": "Research in molecular pathology and ocular diseases, contributing to understanding disease mechanisms and treatment strategies.",
     "Fields of Research": "Molecular Pathology, Ocular Diseases",
     "Link to Page": "https://pathology.wisc.edu/staff/peters-donna/"
@@ -370,7 +370,7 @@
   {
     "Name": "Henry Bunn",
     "Email": "hbunn@wisc.edu",
-    "Faculty": "Anthropology (Glynn LL Isaac Professor of African Paleoanthropology)",
+    "Faculty": "Anthropology",
     "Summary of Research": "My research emphasizes the evolutionary ecology of Early Pleistocene hominins, particularly the diet and foraging strategies of early Homo, and the behavioral ecology and archaeology of Hadza foragers in Tanzania. I have conducted extensive fieldwork at Olduvai Gorge, focusing on Oldowan archaeological sites, and have studied modern foraging societies to gain insights into early human behavior.",
     "Fields of Research": "Archaeology of Human Origins, Evolution of Human Diet, Foraging Strategies, East Africa",
     "Link to Page": "https://www.anthropology.wisc.edu/staff/bunn-henry/"
@@ -378,7 +378,7 @@
   {
     "Name": "Fumie Iizuka",
     "Email": "fiizuka@wisc.edu",
-    "Faculty": "Anthropology (Assistant Professor)",
+    "Faculty": "Anthropology ",
     "Summary of Research": "I am an archaeologist studying decisions made by hunter-gatherers and early farmers to adopt pottery and associated technology in response to climate and ecosystem changes. My work critically evaluates geochronology in these contexts, focusing on pre-ceramic to ceramic period transitions in Eastern Eurasia, including Japan, Mongolia, and Siberian Russia, as well as in Latin America.",
     "Fields of Research": "Archaeology, Eastern Eurasia, Archaeometry, Ceramics, Paleoenvironment, Hunter-Gatherers, Early Farmers, Pre-Ceramic to Ceramic Transitions, Late Pleistocene to Mid-Holocene",
     "Link to Page": "https://www.anthropology.wisc.edu/staff/iizuka-fumie/"
@@ -386,7 +386,7 @@
   {
     "Name": "J. Mark Kenoyer",
     "Email": "kenoyer@wisc.edu",
-    "Faculty": "Anthropology (George F. Dales Jr. and Barbara A. Dales Professor of Anthropology)",
+    "Faculty": "Anthropology",
     "Summary of Research": "My research focuses on the archaeology of the Indus Civilization, including early urbanism, technology, trade, and socio-economic and political organization. I have been excavating and conducting research on the Indus Civilization since 1975, with significant work at the site of Harappa, Pakistan. My interests also encompass ancient technologies, crafts, and cultural periods in South Asia and other regions.",
     "Fields of Research": "Archaeology of the Indus Civilization, Origins of Technology, Craft Specialization, Ancient Trade, Early Urbanism, Socio-Economic and Political Organization, South Asia",
     "Link to Page": "https://www.anthropology.wisc.edu/staff/kenoyer-j-mark/"
@@ -394,7 +394,7 @@
   {
     "Name": "Timothy Bugni",
     "Email": "tbugni@wisc.edu",
-    "Faculty": "Pharmaceutical Sciences Division (Professor)",
+    "Faculty": "Pharmaceutical Sciences Division ",
     "Summary of Research": "Professor Bugni's research focuses on marine natural products chemistry, aiming to discover new agents to treat multi-drug resistant infectious diseases, particularly MDR-fungal and MDR-Gram negative bacterial pathogens. His work involves developing methods to mine the metabolomes of marine bacteria for novel molecules, utilizing mass spectrometry and nuclear magnetic resonance spectroscopy for structure elucidation, and evaluating their potential as drug leads.",
     "Fields of Research": "Marine Natural Products Chemistry, Drug Discovery, Metabolomics, Mass Spectrometry, NMR Spectroscopy",
     "Link to Page": "https://pharmacy.wisc.edu/faculty/bugni-research-group/"
@@ -402,7 +402,7 @@
   {
     "Name": "Karen B. Strier",
     "Email": "kbstrier@wisc.edu",
-    "Faculty": "Anthropology (Vilas Research Professor & Irven DeVore Professor)",
+    "Faculty": "Anthropology",
     "Summary of Research": "Professor Strier's research aims to understand the behavioral ecology of primates from a comparative perspective and contribute to their conservation. Since 1982, she has been studying the critically endangered northern muriqui (*Brachyteles hypoxanthus*) in Brazil's Atlantic forest, providing insights into their behavior, ecology, and conservation needs.",
     "Fields of Research": "Primate Behavioral Ecology, Conservation, Population Dynamics, Brazil's Atlantic Forest",
     "Link to Page": "https://www.anthropology.wisc.edu/staff/strier-karen/"
