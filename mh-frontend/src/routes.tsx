@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import WhatDoYouWantPage from "./pages/WhatDoYouWantPage";
 import RAFeaturePage from "./pages/RAFeaturePage";
 import CourseSearchAIPage from "./pages/CourseSearchAIPage";
+import AccountSettingsPage from "./pages/AccountSettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: "course-search-ai",
         element: <CourseSearchAIPage />,
+      },
+      {
+        path: "account-setting",
+        element: <AccountSettingsPage />,
       },
     ],
   },
