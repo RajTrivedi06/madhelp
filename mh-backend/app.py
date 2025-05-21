@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 from werkzeug.utils import secure_filename
 import logging
@@ -10,7 +10,7 @@ import logging
 import bcrypt
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, create_refresh_token
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy import func
 
@@ -29,13 +29,15 @@ app = Flask(__name__)
 app.config.update(
     UPLOAD_FOLDER=str(UPLOAD_FOLDER),
     JWT_SECRET_KEY=os.environ.get("JWT_SECRET_KEY", "dev-only-key-CHANGE-ME"),
+    JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=1),  # Access tokens expire in 1 hour
+    JWT_REFRESH_TOKEN_EXPIRES=timedelta(days=30),  # Refresh tokens expire in 30 days
 )
 CORS(
     app,
     resources={
         r"/api/*": {
             "origins": ["http://localhost:5173"],
-            "methods": ["GET", "POST", "OPTIONS"],
+            "methods": ["GET", "POST", "PUT", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "supports_credentials": True,
         }
@@ -122,19 +124,26 @@ def signup():
 
         # 2. Files
         cv = request.files.get("cv")
-        dars_files = [request.files.get(f"dars{i}") for i in range(1, 5)]
+        dars_files = request.files.getlist("dars")  # Get all files from the 'dars' input
+        
         if not (cv and allowed_file(cv.filename)):
             logger.error("Invalid or missing CV")
             return jsonify(error="Please upload a valid CV (PDF)."), 400
-        if not (dars_files[0] and allowed_file(dars_files[0].filename)):
-            logger.error("Invalid or missing DARS1")
-            return jsonify(error="Please upload at least one DARS PDF (DARS1)."), 400
-        for i, dars in enumerate(dars_files[1:], 2):
-            if dars and not allowed_file(dars.filename):
-                logger.error(f"Invalid DARS{i}")
-                return jsonify(error=f"Invalid file format for DARS{i} (must be PDF)."), 400
+            
+        if not dars_files or not any(allowed_file(dars.filename) for dars in dars_files):
+            logger.error("No valid DARS files provided")
+            return jsonify(error="Please upload at least one valid DARS PDF."), 400
+            
+        if len(dars_files) > 4:
+            logger.error("Too many DARS files")
+            return jsonify(error="You can only upload up to 4 DARS files."), 400
+            
+        for dars in dars_files:
+            if not allowed_file(dars.filename):
+                logger.error(f"Invalid DARS file: {dars.filename}")
+                return jsonify(error=f"Invalid file format for DARS (must be PDF)."), 400
 
-        num_dars = sum(1 for dars in dars_files if dars)
+        num_dars = len(dars_files)
         logger.info(f"Processing signup for user '{username}' with {num_dars} DARS PDF(s)")
 
         # 3. Save files
@@ -144,15 +153,15 @@ def signup():
         cv.save(cv_path)
 
         dars_paths = []
-        for i, dars in enumerate(dars_files, 1):
-            if dars:
-                dars_filename = secure_filename(dars.filename)
-                dars_unique_name = f"{uuid.uuid4().hex}_{dars_filename}"
-                dars_path = UPLOAD_FOLDER / dars_unique_name
-                dars.save(dars_path)
-                dars_paths.append(dars_path)
-            else:
-                dars_paths.append(None)
+        for dars in dars_files:
+            dars_filename = secure_filename(dars.filename)
+            dars_unique_name = f"{uuid.uuid4().hex}_{dars_filename}"
+            dars_path = UPLOAD_FOLDER / dars_unique_name
+            dars.save(dars_path)
+            dars_paths.append(dars_path)
+        
+        # Pad dars_paths to always have 4 elements (None for missing files)
+        dars_paths.extend([None] * (4 - len(dars_paths)))
 
         # 4. Check for existing user (rely on DB's NOCASE for email)
         existing_user = session.query(User).filter(
@@ -221,9 +230,15 @@ def signup():
         logger.debug(f"After signup: {user_count} users")
 
         # 10. Generate token and respond
-        token = create_access_token(identity=new_user.id)
-        logger.debug(f"Generated JWT for user_id={new_user.id}")
-        return jsonify(username=username, token=token, message="Signup successful!"), 201
+        access_token = create_access_token(identity=new_user.id)
+        refresh_token = create_refresh_token(identity=new_user.id)
+        logger.debug(f"Generated JWT tokens for user_id={new_user.id}")
+        return jsonify({
+            "username": username,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "message": "Signup successful!"
+        }), 201
 
     except IntegrityError as e:
         session.rollback()
@@ -265,12 +280,15 @@ def login():
             logger.error(f"Password mismatch for email='{email}'")
             return jsonify(error="Invalid email or password."), 401
 
-        token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=user.id)
+        refresh_token = create_refresh_token(identity=user.id)
         logger.info(f"Successful login for user '{user.username}'")
-        return (
-            jsonify(username=user.username, token=token, message="Login successful!"),
-            200,
-        )
+        return jsonify({
+            "username": user.username,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "message": "Login successful!"
+        }), 200
     finally:
         session.close()
 
@@ -284,6 +302,146 @@ def protected():
 @app.route("/uploads/<path:filename>")
 def get_upload(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
+# Add new endpoint to get user data
+@app.route("/api/user/profile", methods=["GET"])
+@jwt_required()
+def get_user_profile():
+    session = SessionLocal()
+    try:
+        # Add detailed JWT token logging
+        try:
+            user_id = get_jwt_identity()
+            logger.debug(f"JWT token validated successfully. User ID from token: {user_id}")
+        except Exception as jwt_error:
+            logger.error(f"JWT validation failed: {str(jwt_error)}", exc_info=True)
+            return jsonify(error="Invalid or expired token"), 422
+            
+        if not isinstance(user_id, int):
+            logger.error(f"Invalid user_id type from JWT: {type(user_id)}")
+            return jsonify(error="Invalid token format"), 422
+            
+        logger.debug(f"Fetching profile for user_id: {user_id}")
+        
+        user = session.query(User).filter(User.id == user_id).first()
+        if not user:
+            logger.error(f"No user found with id: {user_id}")
+            return jsonify(error="User not found"), 404
+            
+        logger.debug(f"Found user: {user.username} (id: {user.id})")
+        
+        # Get user files if they exist
+        user_files = session.query(UserFiles).filter(UserFiles.id == user_id).first()
+        logger.debug(f"User files found: {user_files is not None}")
+        
+        # Get list of DARS files (excluding None values)
+        dars_files = []
+        if user_files:
+            for i in range(1, 5):
+                dars_text = getattr(user_files, f'dars{i}_text')
+                if dars_text:
+                    dars_files.append({
+                        'id': i,
+                        'name': f'DARS_{i}.pdf',
+                        'label': 'DARS'
+                    })
+            logger.debug(f"Found {len(dars_files)} DARS files")
+        
+        # Get CV file if it exists
+        cv_file = None
+        if user_files and user_files.cv_text:
+            cv_file = {
+                'id': 'cv',
+                'name': 'Resume.pdf',
+                'label': 'CV'
+            }
+            logger.debug("CV file found")
+            
+        response_data = {
+            'profile': {
+                'username': user.username,
+                'email': user.email,
+                'created_at': user.created_at.isoformat()
+            },
+            'documents': {
+                'dars': dars_files,
+                'cv': cv_file
+            }
+        }
+        logger.debug(f"Returning profile data: {response_data}")
+        return jsonify(response_data), 200
+        
+    except Exception as e:
+        logger.error(f"Error fetching user profile: {str(e)}", exc_info=True)
+        return jsonify(error="Failed to fetch user profile"), 500
+    finally:
+        session.close()
+
+# Add endpoint to update user profile
+@app.route("/api/user/profile", methods=["PUT"])
+@jwt_required()
+def update_user_profile():
+    session = SessionLocal()
+    try:
+        user_id = get_jwt_identity()
+        user = session.query(User).filter(User.id == user_id).first()
+        
+        if not user:
+            return jsonify(error="User not found"), 404
+            
+        data = request.get_json()
+        
+        # Update email if provided and not already taken
+        if 'email' in data:
+            new_email = data['email'].strip().lower()
+            if new_email != user.email:
+                existing_user = session.query(User).filter(User.email == new_email).first()
+                if existing_user:
+                    return jsonify(error="Email already in use"), 409
+                user.email = new_email
+        
+        # Update username if provided and not already taken
+        if 'username' in data:
+            new_username = data['username'].strip().lower()
+            if new_username != user.username:
+                existing_user = session.query(User).filter(User.username == new_username).first()
+                if existing_user:
+                    return jsonify(error="Username already in use"), 409
+                user.username = new_username
+        
+        session.commit()
+        return jsonify({
+            'message': 'Profile updated successfully',
+            'profile': {
+                'username': user.username,
+                'email': user.email,
+                'created_at': user.created_at.isoformat()
+            }
+        }), 200
+        
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error updating user profile: {str(e)}")
+        return jsonify(error="Failed to update profile"), 500
+    finally:
+        session.close()
+
+# Add token refresh endpoint
+@app.route("/api/token/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    try:
+        user_id = get_jwt_identity()
+        access_token = create_access_token(identity=user_id)
+        refresh_token = create_refresh_token(identity=user_id)
+        logger.debug(f"Refreshed tokens for user_id={user_id}")
+        return jsonify({
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        }), 200
+    except Exception as e:
+        logger.error(f"Token refresh failed: {str(e)}", exc_info=True)
+        return jsonify(error="Failed to refresh token"), 401
 
 # ───────────────────────────────────────────────────────────────────────────────
 #  Run dev server

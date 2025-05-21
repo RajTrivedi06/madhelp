@@ -1,51 +1,246 @@
 // AccountSettingsPage.tsx
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+  ChangeEvent,
+  FormEvent,
+  MouseEvent,
+} from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Label from "@radix-ui/react-label";
-import { Edit, Check, X, FileText, Eye, Trash2 } from "lucide-react";
+import { Edit, Check, X, FileText, Eye } from "lucide-react";
 import { Badge } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
+import { useNavigate } from "react-router-dom";
 
-// Sample data for documents
-const sampleDocuments = [
-  {
-    id: 1,
-    name: "DARS_Fall2023.pdf",
-    label: "DARS",
-  },
-  {
-    id: 2,
-    name: "DARS_Spring2023.pdf",
-    label: "DARS",
-  },
-  {
-    id: 3,
-    name: "Resume_2023.pdf",
-    label: "CV",
-  },
-];
+// Helper function to make authenticated API calls
+const fetchWithAuth = async (
+  url: string,
+  options: RequestInit = {},
+  onAuthError?: () => void
+) => {
+  const accessToken = localStorage.getItem("access_token");
+  const refreshToken = localStorage.getItem("refresh_token");
+
+  if (!accessToken || !refreshToken) {
+    console.error("No tokens found in localStorage");
+    if (onAuthError) onAuthError();
+    throw new Error("No authentication tokens found");
+  }
+
+  try {
+    // Validate access token format
+    const tokenParts = accessToken.split(".");
+    if (tokenParts.length !== 3) {
+      console.error("Invalid access token format");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      if (onAuthError) onAuthError();
+      throw new Error("Invalid authentication token");
+    }
+
+    // Try to decode the token payload
+    try {
+      const payload = JSON.parse(atob(tokenParts[1]));
+      console.log("Token payload:", payload);
+
+      // Check if token is expired
+      const expirationTime = payload.exp * 1000; // Convert to milliseconds
+      if (Date.now() >= expirationTime) {
+        console.log("Access token expired, attempting to refresh...");
+        try {
+          const refreshResponse = await fetch(
+            "http://localhost:5000/api/token/refresh",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (refreshResponse.ok) {
+            const { access_token, refresh_token } =
+              await refreshResponse.json();
+            localStorage.setItem("access_token", access_token);
+            localStorage.setItem("refresh_token", refresh_token);
+            console.log("Tokens refreshed successfully");
+            // Retry the original request with the new access token
+            return fetchWithAuth(url, options, onAuthError);
+          } else {
+            console.error("Token refresh failed");
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            if (onAuthError) onAuthError();
+            throw new Error("Session expired - please log in again");
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          if (onAuthError) onAuthError();
+          throw new Error("Session expired - please log in again");
+        }
+      }
+
+      if (!payload.sub || typeof payload.sub !== "number") {
+        console.error("Invalid token payload - missing or invalid user ID");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        if (onAuthError) onAuthError();
+        throw new Error("Invalid token format");
+      }
+    } catch (e) {
+      console.error("Failed to decode token payload:", e);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      if (onAuthError) onAuthError();
+      throw new Error("Invalid token format");
+    }
+
+    console.log("Making API request to:", url);
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 401 || response.status === 422) {
+      console.error(`Authentication failed (${response.status})`);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      if (onAuthError) onAuthError();
+      throw new Error("Authentication failed - please log in again");
+    }
+
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ error: "Failed to parse error response" }));
+      console.error("API Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData,
+        url: url,
+      });
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`
+      );
+    }
+
+    const data = await response.json();
+    console.log("API Response:", data);
+    return data;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    if (error instanceof Error) {
+      if (error.message.includes("Failed to fetch")) {
+        throw new Error(
+          "Unable to connect to the server. Please check if the backend is running."
+        );
+      }
+      throw new Error(`API request failed: ${error.message}`);
+    }
+    throw new Error("API request failed: Unknown error");
+  }
+};
+
+// Add type definitions
+interface Profile {
+  username: string;
+  email: string;
+  created_at: string;
+}
+
+interface Document {
+  id: number | string;
+  name: string;
+  label: string;
+}
+
+interface Documents {
+  dars: Document[];
+  cv: Document | null;
+}
 
 // ------------------------------
 // ProfileSection Component
 // ------------------------------
 const ProfileSection = () => {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
+  const [profile, setProfile] = useState<Profile>({
+    username: "",
+    email: "",
+    created_at: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Simulate API call to save profile data
+  const handleAuthError = () => {
+    navigate("/");
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    // Reset profile data if needed
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await fetchWithAuth(
+          "http://localhost:5000/api/user/profile",
+          {},
+          handleAuthError
+        );
+        setProfile(data.profile);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load profile");
+      }
+    };
+    fetchProfile();
+  }, [navigate]);
+
+  const handleSave = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const data = await fetchWithAuth(
+        "http://localhost:5000/api/user/profile",
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            username: profile.username,
+            email: profile.email,
+          }),
+        },
+        handleAuthError
+      );
+      setProfile(data.profile);
+      setIsEditing(false);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update profile");
+    }
   };
+
+  const handleCancel = (e: FormEvent) => {
+    e.preventDefault();
+    setIsEditing(false);
+    // Reset profile data by fetching again
+    fetchWithAuth("http://localhost:5000/api/user/profile", {}, handleAuthError)
+      .then((data) => setProfile(data.profile))
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Failed to reset profile")
+      );
+  };
+
+  if (error) {
+    return (
+      <div className="text-red-600 p-4 bg-red-50 rounded-lg">
+        Error: {error}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -53,7 +248,10 @@ const ProfileSection = () => {
         <h2 className="text-xl font-semibold">Profile Information</h2>
         {!isEditing && (
           <button
-            onClick={() => setIsEditing(true)}
+            onClick={(e: MouseEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              setIsEditing(true);
+            }}
             className="flex items-center space-x-1 text-blue-600 hover:text-blue-800"
           >
             <Edit size={16} />
@@ -63,21 +261,23 @@ const ProfileSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Full Name */}
+        {/* Username */}
         <div>
           <Label.Root className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
+            Username
           </Label.Root>
           {isEditing ? (
             <input
               type="text"
-              value={profile.name}
-              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+              value={profile.username}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setProfile({ ...profile, username: e.target.value })
+              }
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           ) : (
             <div className="p-3 border rounded bg-gray-100 text-base">
-              {profile.name}
+              {profile.username}
             </div>
           )}
         </div>
@@ -91,7 +291,7 @@ const ProfileSection = () => {
             <input
               type="email"
               value={profile.email}
-              onChange={(e) =>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setProfile({ ...profile, email: e.target.value })
               }
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -103,25 +303,14 @@ const ProfileSection = () => {
           )}
         </div>
 
-        {/* Phone Number */}
+        {/* Account Created Date */}
         <div>
           <Label.Root className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number
+            Account Created
           </Label.Root>
-          {isEditing ? (
-            <input
-              type="tel"
-              value={profile.phone}
-              onChange={(e) =>
-                setProfile({ ...profile, phone: e.target.value })
-              }
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          ) : (
-            <div className="p-3 border rounded bg-gray-100 text-base">
-              {profile.phone}
-            </div>
-          )}
+          <div className="p-3 border rounded bg-gray-100 text-base">
+            {new Date(profile.created_at).toLocaleDateString()}
+          </div>
         </div>
       </div>
 
@@ -129,14 +318,14 @@ const ProfileSection = () => {
       {isEditing && (
         <div className="flex space-x-4">
           <button
-            onClick={handleSave}
+            onClick={(e: MouseEvent<HTMLButtonElement>) => handleSave(e)}
             className="flex items-center space-x-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             <Check size={16} />
             <span>Save</span>
           </button>
           <button
-            onClick={handleCancel}
+            onClick={(e: MouseEvent<HTMLButtonElement>) => handleCancel(e)}
             className="flex items-center space-x-1 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
           >
             <X size={16} />
@@ -229,36 +418,47 @@ const PasswordSection = () => {
 };
 
 // ------------------------------
-// DocumentsSection with Sub-Tabs
+// DocumentsSection Component
 // ------------------------------
 const DocumentsSection = () => {
-  // Separate documents for the two sub-tabs
-  const darsDocuments = sampleDocuments.filter((doc) => doc.label === "DARS");
-  const cvDocuments = sampleDocuments.filter((doc) => doc.label === "CV");
+  const navigate = useNavigate();
+  const [documents, setDocuments] = useState<Documents>({ dars: [], cv: null });
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddDars = () => {
-    alert("Add DARS Document - Implement your own logic or modal here.");
+  const handleAuthError = () => {
+    navigate("/");
   };
 
-  const handleAddCV = () => {
-    alert("Add CV Document - Implement your own logic or modal here.");
-  };
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        const data = await fetchWithAuth(
+          "http://localhost:5000/api/user/profile",
+          {},
+          handleAuthError
+        );
+        setDocuments(data.documents);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load documents"
+        );
+      }
+    };
+    fetchDocuments();
+  }, [navigate]);
 
-  const handlePreview = (doc) => {
-    alert(`Previewing: ${doc.name}`);
-  };
-
-  const handleDelete = (docId, label) => {
-    alert(
-      `Delete ${label} document with ID: ${docId} (implement delete logic)`
+  if (error) {
+    return (
+      <div className="text-red-600 p-4 bg-red-50 rounded-lg">
+        Error: {error}
+      </div>
     );
-  };
+  }
 
   // Reusable card component for a single document
-  const DocumentCard = ({ doc }) => {
+  const DocumentCard = ({ doc }: { doc: Document }) => {
     return (
       <div className="flex flex-col border border-gray-200 rounded-lg shadow-sm overflow-hidden w-full sm:w-[48%] lg:w-[32%] xl:w-[24%]">
-        {/* Top section with icon, name, and badge */}
         <div className="p-4 flex items-center gap-3">
           <FileText className="h-6 w-6 text-gray-500" />
           <div className="flex flex-col">
@@ -277,24 +477,17 @@ const DocumentsSection = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="h-px bg-gray-200" />
 
-        {/* Bottom actions row */}
         <div className="px-4 py-2 flex items-center justify-between">
           <button
-            onClick={() => handlePreview(doc)}
+            onClick={() =>
+              window.open(`http://localhost:5000/uploads/${doc.name}`, "_blank")
+            }
             className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900"
           >
             <Eye className="h-4 w-4" />
             <span>Preview</span>
-          </button>
-          <button
-            onClick={() => handleDelete(doc.id, doc.label)}
-            className="flex items-center gap-1 text-sm text-red-500 hover:text-red-600"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span>Delete</span>
           </button>
         </div>
       </div>
@@ -304,10 +497,9 @@ const DocumentsSection = () => {
   return (
     <div className="bg-white rounded-md p-6 border border-gray-200">
       <h2 className="text-2xl font-semibold mb-2">Documents</h2>
-      <p className="text-gray-600 mb-6">Manage your uploaded documents</p>
+      <p className="text-gray-600 mb-6">Your uploaded documents</p>
 
       <Tabs.Root defaultValue="dars" className="w-full">
-        {/* Sub-tabs for DARS and CV */}
         <Tabs.List
           className="flex items-center gap-4 pb-2 mb-6 border-b"
           aria-label="Select document type"
@@ -326,50 +518,26 @@ const DocumentsSection = () => {
           </Tabs.Trigger>
         </Tabs.List>
 
-        {/* DARS Documents */}
         <Tabs.Content value="dars" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div />
-            <button
-              onClick={handleAddDars}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium"
-            >
-              + Add DARS
-            </button>
-          </div>
-
-          {darsDocuments.length === 0 ? (
+          {documents.dars.length === 0 ? (
             <p className="text-gray-500 mt-2">
               No DARS Documents uploaded yet.
             </p>
           ) : (
             <div className="flex flex-wrap gap-4 mt-4">
-              {darsDocuments.map((doc) => (
+              {documents.dars.map((doc) => (
                 <DocumentCard key={doc.id} doc={doc} />
               ))}
             </div>
           )}
         </Tabs.Content>
 
-        {/* CV Documents */}
         <Tabs.Content value="cv" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div />
-            <button
-              onClick={handleAddCV}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium"
-            >
-              + Add CV
-            </button>
-          </div>
-
-          {cvDocuments.length === 0 ? (
+          {!documents.cv ? (
             <p className="text-gray-500 mt-2">No CV uploaded yet.</p>
           ) : (
             <div className="flex flex-wrap gap-4 mt-4">
-              {cvDocuments.map((doc) => (
-                <DocumentCard key={doc.id} doc={doc} />
-              ))}
+              <DocumentCard doc={documents.cv} />
             </div>
           )}
         </Tabs.Content>
@@ -382,6 +550,64 @@ const DocumentsSection = () => {
 // Main AccountSettingsPage
 // ------------------------------
 const AccountSettingsPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const accessToken = localStorage.getItem("access_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+
+    if (!accessToken || !refreshToken) {
+      navigate("/");
+      return;
+    }
+
+    // Validate access token format
+    try {
+      const tokenParts = accessToken.split(".");
+      if (tokenParts.length !== 3) {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        navigate("/");
+        return;
+      }
+
+      // Check if token is expired
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const expirationTime = payload.exp * 1000;
+      if (Date.now() >= expirationTime) {
+        // Try to refresh the token
+        fetch("http://localhost:5000/api/token/refresh", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Token refresh failed");
+            }
+            return response.json();
+          })
+          .then(({ access_token, refresh_token }) => {
+            localStorage.setItem("access_token", access_token);
+            localStorage.setItem("refresh_token", refresh_token);
+          })
+          .catch(() => {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            navigate("/");
+          });
+      }
+    } catch (error) {
+      console.error("Token validation failed:", error);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      navigate("/");
+    }
+  }, [navigate]);
+
   return (
     <Theme>
       <div className="max-w-6xl mx-auto p-8">

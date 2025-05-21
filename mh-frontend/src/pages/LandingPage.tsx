@@ -14,17 +14,39 @@ function FileUploadButton({
   name,
   onFileSelected,
   required = false,
+  multiple = false,
 }: {
   label: string;
   accept: string;
   name: string;
-  onFileSelected?: (file: File) => void;
+  onFileSelected?: (files: File[]) => void;
   required?: boolean;
+  multiple?: boolean;
 }) {
   const ref = React.useRef<HTMLInputElement>(null);
+  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setSelectedFiles(files);
+    onFileSelected?.(files);
+  };
+
+  const removeFile = (indexToRemove: number) => {
+    const newFiles = selectedFiles.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setSelectedFiles(newFiles);
+    onFileSelected?.(newFiles);
+
+    // Reset the input value to allow selecting the same file again
+    if (ref.current) {
+      ref.current.value = "";
+    }
+  };
 
   return (
-    <>
+    <div className="space-y-2">
       <button
         type="button"
         onClick={() => ref.current?.click()}
@@ -38,10 +60,31 @@ function FileUploadButton({
         type="file"
         name={name}
         accept={accept}
+        multiple={multiple}
         required={required}
-        onChange={(e) => onFileSelected?.(e.target.files![0])}
+        onChange={handleFileChange}
       />
-    </>
+      {selectedFiles.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {selectedFiles.map((file, index) => (
+            <div
+              key={index}
+              className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
+            >
+              <span className="max-w-[150px] truncate">{file.name}</span>
+              <button
+                type="button"
+                onClick={() => removeFile(index)}
+                className="text-gray-500 hover:text-red-600 focus:outline-none"
+                title="Remove file"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -101,23 +144,48 @@ function SignUpForm() {
       {/** PDF uploads **/}
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          Upload CV (PDF Only)
+          Upload CV (PDF Only) *
         </label>
-        <FileUploadButton label="Upload CV" accept=".pdf" name="cv" required />
+        <FileUploadButton
+          label="Upload CV"
+          accept=".pdf"
+          name="cv"
+          required
+          onFileSelected={(files) => {
+            if (files.length > 1) {
+              alert("Please select only one CV file");
+              const input = document.querySelector(
+                'input[name="cv"]'
+              ) as HTMLInputElement;
+              if (input) input.value = "";
+            }
+          }}
+        />
       </div>
-      {[1, 2, 3, 4].map((i) => (
-        <div key={`dars${i}`}>
-          <label className="block text-sm font-medium text-gray-700">
-            Upload DARS {i} (PDF Only){i === 1 ? " *" : " (Optional)"}
-          </label>
-          <FileUploadButton
-            label={`Upload DARS ${i}`}
-            accept=".pdf"
-            name={`dars${i}`}
-            required={i === 1}
-          />
-        </div>
-      ))}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Upload DARS Files (PDF Only) *
+        </label>
+        <p className="text-sm text-gray-500 mb-2">
+          You can upload up to 4 DARS files. The first one is required.
+        </p>
+        <FileUploadButton
+          label="Choose DARS Files"
+          accept=".pdf"
+          name="dars"
+          required
+          multiple
+          onFileSelected={(files) => {
+            if (files.length > 4) {
+              alert("You can only upload up to 4 DARS files");
+              const input = document.querySelector(
+                'input[name="dars"]'
+              ) as HTMLInputElement;
+              if (input) input.value = "";
+            }
+          }}
+        />
+      </div>
 
       <button
         type="submit"

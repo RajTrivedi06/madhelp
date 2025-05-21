@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/MadHelp.png";
 import InfiniteMovingCards from "../InfiniteMovingCards";
+import { User, ChevronDown, Settings, LogOut } from "lucide-react";
 
 const randomNames = [
   "Alex Johnson|Physics",
@@ -38,9 +39,57 @@ const randomNames = [
 
 export default function ExploreOpportunitiesPage() {
   const navigate = useNavigate();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   return (
     <div className="relative flex flex-col items-center justify-start min-h-screen bg-white px-12 py-16 border-4 border-gray-300 shadow-2xl rounded-lg">
+      {/* Profile Icon and Dropdown */}
+      <div className="absolute top-8 right-8">
+        <div className="relative">
+          <button
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
+              <User className="w-5 h-5 text-white" />
+            </div>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                isProfileOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {/* Dropdown Menu */}
+          {isProfileOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+              <button
+                onClick={() => {
+                  navigate("/account-setting");
+                  setIsProfileOpen(false);
+                }}
+                className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                Account Settings
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Logo Centered at Top */}
       <img
         src={logo}
