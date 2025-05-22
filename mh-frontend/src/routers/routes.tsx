@@ -1,51 +1,42 @@
+// router.tsx
 import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import AuthenticateRouters from "./AuthenticateRouters";
 import NonAuthenticatedRouters from "./NonAuthenticatedRouters";
 
-// Import all page components
+// Import all page components from the correct path
 import LandingPage from "../pages/LandingPage";
 import WhatDoYouWantPage from "../pages/WhatDoYouWantPage";
-import AccountSettingsPage from "../pages/AccountSettingsPage";
 import RAFeaturePage from "../pages/RAFeaturePage";
 import CourseSearchAIPage from "../pages/CourseSearchAIPage";
+import AccountSettingsPage from "../pages/AccountSettingsPage";
 
-// Import your page components here
-// import LandingPage from "../pages/LandingPage";
-// import DashboardPage from "../pages/DashboardPage";
-// etc...
+// Use Outlet from react-router-dom instead of a custom App component
+const App = () => {
+  return <Outlet />;
+};
 
 const router = createBrowserRouter([
   {
-    element: <NonAuthenticatedRouters />,
+    path: "/",
+    element: <App />,
     children: [
       {
-        path: "/",
-        element: <LandingPage />,
-      },
-      // Add other public routes here
-    ],
-  },
-  {
-    element: <AuthenticateRouters />,
-    children: [
-      {
-        path: "/what-do-you-want",
-        element: <WhatDoYouWantPage />,
+        element: <NonAuthenticatedRouters />,
+        children: [
+          { index: true, element: <LandingPage /> },
+          // any other public marketing pages…
+        ],
       },
       {
-        path: "/account-setting",
-        element: <AccountSettingsPage />,
+        element: <AuthenticateRouters />,
+        children: [
+          { path: "what-do-you-want", element: <WhatDoYouWantPage /> },
+          { path: "ra-feature", element: <RAFeaturePage /> },
+          { path: "course-search-ai", element: <CourseSearchAIPage /> },
+          { path: "account-setting", element: <AccountSettingsPage /> },
+        ],
       },
-      {
-        path: "/ra-feature",
-        element: <RAFeaturePage />,
-      },
-      {
-        path: "/course-search-ai",
-        element: <CourseSearchAIPage />,
-      },
-      // Add other protected routes here
     ],
   },
 ]);
