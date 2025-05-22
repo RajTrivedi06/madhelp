@@ -42,8 +42,13 @@ export default function ExploreOpportunitiesPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleSignOut = () => {
-    localStorage.removeItem("token");
-    navigate("/");
+    // Clear stored JWT tokens
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    // Close profile dropdown
+    setIsProfileOpen(false);
+    // Redirect to landing page
+    navigate("/", { replace: true });
   };
 
   return (
@@ -54,6 +59,8 @@ export default function ExploreOpportunitiesPage() {
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-haspopup="true"
+            aria-expanded={isProfileOpen}
           >
             <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
               <User className="w-5 h-5 text-white" />
@@ -65,7 +72,6 @@ export default function ExploreOpportunitiesPage() {
             />
           </button>
 
-          {/* Dropdown Menu */}
           {isProfileOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
               <button
@@ -94,7 +100,7 @@ export default function ExploreOpportunitiesPage() {
       <img
         src={logo}
         alt="MadHelp Logo"
-        className="absolute top-8 left-1/3 transform -translate-x-1/2 w-90 h-auto"
+        className="absolute top-8 left-1/2 -translate-x-1/2 w-40 h-auto"
       />
 
       {/* Shifted Boxes Down */}

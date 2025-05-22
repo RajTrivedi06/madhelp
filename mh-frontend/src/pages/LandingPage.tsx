@@ -33,16 +33,10 @@ function FileUploadButton({
   };
 
   const removeFile = (indexToRemove: number) => {
-    const newFiles = selectedFiles.filter(
-      (_, index) => index !== indexToRemove
-    );
+    const newFiles = selectedFiles.filter((_, idx) => idx !== indexToRemove);
     setSelectedFiles(newFiles);
     onFileSelected?.(newFiles);
-
-    // Reset the input value to allow selecting the same file again
-    if (ref.current) {
-      ref.current.value = "";
-    }
+    if (ref.current) ref.current.value = "";
   };
 
   return (
@@ -66,15 +60,15 @@ function FileUploadButton({
       />
       {selectedFiles.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
-          {selectedFiles.map((file, index) => (
+          {selectedFiles.map((file, idx) => (
             <div
-              key={index}
+              key={idx}
               className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
             >
               <span className="max-w-[150px] truncate">{file.name}</span>
               <button
                 type="button"
-                onClick={() => removeFile(index)}
+                onClick={() => removeFile(idx)}
                 className="text-gray-500 hover:text-red-600 focus:outline-none"
                 title="Remove file"
               >
@@ -89,7 +83,7 @@ function FileUploadButton({
 }
 
 // ------------------------------------------------------------------
-//   SIGN‑UP  form (posts to /api/signup)
+// SIGN-UP form (posts to /api/signup)
 // ------------------------------------------------------------------
 function SignUpForm() {
   const navigate = useNavigate();
@@ -98,26 +92,25 @@ function SignUpForm() {
     e.preventDefault();
     const data = new FormData(e.target as HTMLFormElement);
 
-    // Debug: Log form data
     console.log("Form data:", Object.fromEntries(data.entries()));
 
     try {
       const res = await postForm("/api/signup", data);
-      localStorage.setItem("token", res.token);
+      // ** Store the correct tokens **
+      localStorage.setItem("access_token", res.access_token);
+      localStorage.setItem("refresh_token", res.refresh_token);
+
       alert(`Signup successful! Welcome ${res.username}.`);
-      navigate("/what-do-you-want");
+      navigate("/what-do-you-want", { replace: true });
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        alert(err.message);
-      } else {
-        alert("An unknown error occurred");
-      }
+      const msg =
+        err instanceof Error ? err.message : "An unknown error occurred";
+      alert(msg);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/** username / email / passwords **/}
       {[
         { label: "Username", name: "username", type: "text" },
         { label: "Email", name: "email", type: "email" },
@@ -141,7 +134,6 @@ function SignUpForm() {
         </div>
       ))}
 
-      {/** PDF uploads **/}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Upload CV (PDF Only) *
@@ -154,10 +146,9 @@ function SignUpForm() {
           onFileSelected={(files) => {
             if (files.length > 1) {
               alert("Please select only one CV file");
-              const input = document.querySelector(
-                'input[name="cv"]'
-              ) as HTMLInputElement;
-              if (input) input.value = "";
+              (
+                document.querySelector('input[name="cv"]') as HTMLInputElement
+              ).value = "";
             }
           }}
         />
@@ -178,10 +169,9 @@ function SignUpForm() {
           onFileSelected={(files) => {
             if (files.length > 4) {
               alert("You can only upload up to 4 DARS files");
-              const input = document.querySelector(
-                'input[name="dars"]'
-              ) as HTMLInputElement;
-              if (input) input.value = "";
+              (
+                document.querySelector('input[name="dars"]') as HTMLInputElement
+              ).value = "";
             }
           }}
         />
@@ -198,7 +188,7 @@ function SignUpForm() {
 }
 
 // ------------------------------------------------------------------
-//   LOGIN form (posts to /api/login)
+// LOGIN form (posts to /api/login)
 // ------------------------------------------------------------------
 function LoginForm() {
   const navigate = useNavigate();
@@ -209,11 +199,15 @@ function LoginForm() {
 
     try {
       const res = await postForm("/api/login", data);
-      localStorage.setItem("token", res.token);
+      // ** Store the correct tokens **
+      localStorage.setItem("access_token", res.access_token);
+      localStorage.setItem("refresh_token", res.refresh_token);
+
       alert(`Login successful! Welcome ${res.username}.`);
-      navigate("/what-do-you-want");
+      navigate("/what-do-you-want", { replace: true });
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : String(err));
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(msg);
     }
   };
 
@@ -243,7 +237,7 @@ function LoginForm() {
 }
 
 // ------------------------------------------------------------------
-//   Landing Page component
+// Landing Page component
 // ------------------------------------------------------------------
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -288,27 +282,27 @@ export default function LandingPage() {
                   Sign In
                 </button>
               </Dialog.Trigger>
-
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/50" />
                 <Dialog.Content className="fixed top-1/2 left-1/2 w-full max-w-md bg-white rounded-xl p-6 shadow-2xl -translate-x-1/2 -translate-y-1/2 mx-4">
                   <Dialog.Title className="text-2xl font-bold text-red-600 text-center mb-6">
                     Authentication
                   </Dialog.Title>
-
                   <Tabs.Root defaultValue="signup">
                     <Tabs.List className="flex justify-center gap-4 mb-6">
-                      {["signup", "login"].map((tab) => (
-                        <Tabs.Trigger
-                          key={tab}
-                          value={tab}
-                          className="px-4 py-2 font-semibold rounded-lg bg-red-100 text-red-600 hover:bg-red-200 data-[state=active]:bg-red-600 data-[state=active]:text-white transition"
-                        >
-                          {tab === "signup" ? "Sign Up" : "Login"}
-                        </Tabs.Trigger>
-                      ))}
+                      <Tabs.Trigger
+                        value="signup"
+                        className="px-4 py-2 font-semibold rounded-lg bg-red-100 text-red-600 hover:bg-red-200 data-[state=active]:bg-red-600 data-[state=active]:text-white"
+                      >
+                        Sign Up
+                      </Tabs.Trigger>
+                      <Tabs.Trigger
+                        value="login"
+                        className="px-4 py-2 font-semibold rounded-lg bg-red-100 text-red-600 hover:bg-red-200 data-[state=active]:bg-red-600 data-[state=active]:text-white"
+                      >
+                        Login
+                      </Tabs.Trigger>
                     </Tabs.List>
-
                     <Tabs.Content value="signup">
                       <SignUpForm />
                     </Tabs.Content>
@@ -316,7 +310,6 @@ export default function LandingPage() {
                       <LoginForm />
                     </Tabs.Content>
                   </Tabs.Root>
-
                   <Dialog.Close asChild>
                     <button
                       className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl"
