@@ -156,7 +156,9 @@ class CourseSearchHelper:
         return course_dict
 
     def extract_course_codes(self, text):
-        matches = re.findall(r"([A-Za-z\s/]+\d+)", text)
+        """Return a set of course codes extracted from arbitrary text."""
+        pattern = r"\b(?!OR\b|AND\b)(?:[A-Za-z]+(?:\s+[A-Za-z]+)*(?:/[A-Za-z]+(?:\s+[A-Za-z]+)*)*)\s*\d+[A-Za-z]?"
+        matches = re.findall(pattern, text, flags=re.IGNORECASE)
         return {m.strip() for m in matches}
 
     def extract_required_courses_from_dars(self, dars_data):
@@ -331,7 +333,9 @@ class CourseSearchHelper:
         return req_set
 
     def extract_course_codes(self, text):
-        matches = re.findall(r"([A-Za-z\s/]+\d+)", text)
+        """Return a set of course codes extracted from arbitrary text."""
+        pattern = r"\b(?!OR\b|AND\b)(?:[A-Za-z]+(?:\s+[A-Za-z]+)*(?:/[A-Za-z]+(?:\s+[A-Za-z]+)*)*)\s*\d+[A-Za-z]?"
+        matches = re.findall(pattern, text, flags=re.IGNORECASE)
         return {match.strip() for match in matches}
 
     def generate_required_course_embeddings(self, required_courses):
