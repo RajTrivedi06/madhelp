@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
-import { LineShadowText } from "../components/magicui/line-shadow-text";
-import { postForm } from "@/lib/api";
+import { LineShadowText } from "@/components/magicui/line-shadow-text";
+import { postForm, AuthResponse } from "../lib/api";
 
 // ------------------------------------------------------------------
 // Reusable PDF upload button
@@ -92,11 +92,8 @@ function SignUpForm() {
     e.preventDefault();
     const data = new FormData(e.target as HTMLFormElement);
 
-    console.log("Form data:", Object.fromEntries(data.entries()));
-
     try {
-      const res = await postForm("/api/signup", data);
-      // ** Store the correct tokens **
+      const res = await postForm<AuthResponse>("/api/signup", data);
       localStorage.setItem("access_token", res.access_token);
       localStorage.setItem("refresh_token", res.refresh_token);
 
@@ -198,8 +195,7 @@ function LoginForm() {
     const data = new FormData(e.target as HTMLFormElement);
 
     try {
-      const res = await postForm("/api/login", data);
-      // ** Store the correct tokens **
+      const res = await postForm<AuthResponse>("/api/login", data);
       localStorage.setItem("access_token", res.access_token);
       localStorage.setItem("refresh_token", res.refresh_token);
 

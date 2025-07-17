@@ -1,18 +1,25 @@
+/* src/AuthenticateRouters.tsx */
 import React from "react";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
-import { isTokenValid } from "../utils/auth";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { isTokenValid } from "@/lib/auth"; // adjust import to your project structure
 
 export default function AuthenticateRouters() {
   const token = localStorage.getItem("access_token");
-  const location = useLocation();
+  let valid = false;
 
-  // If token missing or expired → redirect to landing, opening Login tab
-  if (!token || !isTokenValid(token)) {
+  // Safely verify token validity
+  try {
+    valid = token ? isTokenValid(token) : false;
+  } catch {
+    valid = false;
+  }
+
+  const location = useLocation();
+  if (!token || !valid) {
     return (
       <Navigate to="/" replace state={{ from: location, openLogin: true }} />
     );
   }
 
-  // Otherwise allow access
   return <Outlet />;
 }
