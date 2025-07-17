@@ -58,7 +58,7 @@ logger = logging.getLogger("mh-backend")
 Base.metadata.create_all(engine)
 
 # Instantiate RA matcher once
-matcher = RAMatcher(db_path="data.db", api_key="")
+matcher = RAMatcher(db_path="data.db",)
 
 # ───────────────────────────────────────────────────────────────────────────────
 #  Helpers
