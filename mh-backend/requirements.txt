@@ -4,3 +4,10 @@ Flask-Cors==4.0.0
 Flask-JWT-Extended==4.6.0
 Werkzeug==3.0.1
 python-dotenv==1.0.1
+bcrypt==4.0.1
+PyPDF2==3.0.1
+pdfplumber==0.10.3
+pdf2image==1.17.0
+pytesseract==0.3.10
+pillow==10.2.0
+
